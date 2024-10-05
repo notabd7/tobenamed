@@ -1,7 +1,8 @@
 const express = require('express');
 const cors = require('cors');
-const { getChatGPTSummary, } = require('../bulletPoints');
-const { createQuizFromFile } = require('../quiz');
+const { getChatGPTSummary } = require('../bulletPoints');
+const { generateQuiz } = require ('../quiz')
+const { extractTextFromFile } = require ('../textExtraction')
 const multer = require('multer');
 const path = require('path');
 
@@ -31,7 +32,8 @@ app.post('/summarize', upload.single('file'), async (req, res) => {
   }
 
   try {
-    const summary = await getChatGPTSummary(req.file.path);
+    const content = await extractTextFromFile(req.file.path)
+    const summary = await getChatGPTSummary(content);
     res.json({ summary });
   } catch (error) {
     console.error('Error in summarize endpoint:', error);
@@ -40,18 +42,26 @@ app.post('/summarize', upload.single('file'), async (req, res) => {
 });
 
 app.post('/generate-quiz', upload.single('file'), async (req, res) => {
-  if (!req.file) {
-    return res.status(400).send('No file uploaded.');
-  }
+    if (!req.file) {
+      return res.status(400).send('No file uploaded.');
+    }
+    try {
+        const content = await extractTextFromFile(req.file.path)
+        const summary = await getChatGPTSummary(content);
+        const quizResult = await generateQuiz(content, summary);
+      
+      if (quizResult.error) {
+        console.error('Error generating quiz:', quizResult.error);
+        res.status(500).json({ error: quizResult.error, details: quizResult.details || quizResult.rawContent });
+      } else {
+        res.json({ quiz: quizResult });
+      }
+    } catch (error) {
+      console.error('Error in generate-quiz endpoint:', error);
+      res.status(500).send('An error occurred while generating the quiz.');
+    }
+  });
 
-  try {
-    const quiz = await createQuizFromFile(req.file.path);
-    res.json({ quiz });
-  } catch (error) {
-    console.error('Error in generate-quiz endpoint:', error);
-    res.status(500).send('An error occurred while generating the quiz.');
-  }
-});
 
 // Start the server
 app.listen(port, () => {

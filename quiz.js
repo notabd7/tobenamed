@@ -1,10 +1,8 @@
 require('dotenv').config();
 const axios = require('axios');
-const fs = require('fs');
-const pdf = require('pdf-parse');
-const StreamZip = require('node-stream-zip');
+
 // Import the extractTextFromPPTX function from your existing file
-const { extractTextFromPPTX, getChatGPTSummary } = require('./bulletPoints.js');
+
 
 const apiKey = process.env.OPENAI_API_KEY;
 
@@ -41,13 +39,20 @@ async function generateQuiz(textContent, summary) {
         }
       }
     );
-    console.log('Raw API Response:', response.data.choices[0].message.content);
+
+    let content = response.data.choices[0].message.content;
+    console.log('Raw API Response:', content);
+
+    // Remove any potential markdown formatting
+    content = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+
     try {
-      return JSON.parse(response.data.choices[0].message.content);
+      const parsedContent = JSON.parse(content);
+      return parsedContent;
     } catch (parseError) {
       console.error('Error parsing JSON response:', parseError);
-      console.log('Response content:', response.data.choices[0].message.content);
-      return null;
+      console.log('Cleaned response content:', content);
+      return { error: 'Failed to parse quiz data', rawContent: content };
     }
   } catch (error) {
     console.error('Error in OpenAI API request:', error.response ? error.response.data : error.message);
@@ -55,41 +60,44 @@ async function generateQuiz(textContent, summary) {
       console.log('Status:', error.response.status);
       console.log('Data:', error.response.data);
     }
-    return null;
+    return { error: 'Failed to generate quiz', details: error.message };
   }
 }
 
-async function createQuizFromFile(filePath) {
-  try {
+module.exports = { generateQuiz };
+// async function createQuizFromFile(filePath) {
+//   try {
     
-    let textContent;
-    if (filePath.endsWith('.pdf')) {
-      const dataBuffer = fs.readFileSync(filePath);
-      const data = await pdf(dataBuffer);
-      textContent = data.text;
-    } else if (filePath.endsWith('.txt')) {
-      textContent = fs.readFileSync(filePath, 'utf-8');
-    } else if (filePath.endsWith('.pptx')) {
-      textContent = await extractTextFromPPTX(filePath);
-    } else {
-      console.error('Unsupported file format. Please use a .pdf, .txt, or .pptx file.');
-      return;
-    }
-    summary = getChatGPTSummary(textContent)
-    const quiz = await generateQuiz(textContent, summary);
-    console.log("sum", summary)
-    if (quiz) {
-      console.log(JSON.stringify(quiz, null, 2));
-      return quiz;
-      
-    } else {
-      console.log('Failed to generate quiz. Please check the error logs.');
-    }
-  } catch (error) {
-    console.error('Error creating quiz:', error);
-  }
-}
+//     // let textContent;
+//     // if (filePath.endsWith('.pdf')) {
+//     //   const dataBuffer = fs.readFileSync(filePath);
+//     //   const data = await pdf(dataBuffer);
+//     //   textContent = data.texts;
+//     // } else if (filePath.endsWith('.txt')) {
+//     //   textContent = fs.readFileSync(filePath, 'utf-8');
+//     // } else if (filePath.endsWith('.pptx')) {
+//     //   textContent = await extractTextFromPPTX(filePath);
+//     // } else {
+//     //   console.error('Unsupported file format. Please use a .pdf, .txt, or .pptx file.');
+//     //   return;
+//     // }
 
-// Example usage
-const filePath = 'samples/CS3060 OL Sensing.pptx';
-createQuizFromFile(filePath);
+//     //textContent = extractTextFomFile(filePath)
+//     //summary = getChatGPTSummary(textContent)
+//     const quiz = await generateQuiz(textContent, summary);
+//     console.log("sum", summary)
+//     if (quiz) {
+//       console.log(JSON.stringify(quiz, null, 2));
+//       return quiz;
+      
+//     } else {
+//       console.log('Failed to generate quiz. Please check the error logs.');
+//     }
+//   } catch (error) {
+//     console.error('Error creating quiz:', error);
+//   }
+// }
+
+// // Example usage
+// const filePath = './samples/s1.pptx';
+// createQuizFromFile(filePath);

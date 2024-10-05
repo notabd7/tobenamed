@@ -1,9 +1,6 @@
 require('dotenv').config();
 const axios = require('axios');
-const fs = require('fs');
-const pdf = require('pdf-parse');
-const officegen = require('officegen');
-const StreamZip = require('node-stream-zip');
+
 
 // Get the API key from the .env file
 const apiKey = process.env.OPENAI_API_KEY;
@@ -12,6 +9,8 @@ if (!apiKey) {
   console.error('OPENAI_API_KEY is not set in the .env file');
   process.exit(1);
 }
+
+
 async function getChatGPTSummary(textContent) {
   try {
     const response = await axios.post(
@@ -44,32 +43,6 @@ async function getChatGPTSummary(textContent) {
   }
 }
 
-async function extractTextFromPPTX(filePath) {
-  return new Promise((resolve, reject) => {
-    const zip = new StreamZip({
-      file: filePath,
-      storeEntries: true
-    });
-
-    zip.on('ready', () => {
-      let slideTexts = [];
-      const entries = Object.values(zip.entries());
-      const slideEntries = entries.filter(entry => entry.name.startsWith('ppt/slides/slide'));
-      
-      slideEntries.forEach(entry => {
-        const slideContent = zip.entryDataSync(entry).toString('utf8');
-        const textMatches = slideContent.match(/<a:t>(.+?)<\/a:t>/g) || [];
-        const slideText = textMatches.map(match => match.replace(/<\/?a:t>/g, '')).join(' ');
-        slideTexts.push(slideText);
-      });
-
-      zip.close();
-      resolve(slideTexts.join('\n\n'));
-    });
-
-    zip.on('error', reject);
-  });
-}
 
 // async function summarizeFile(filePath) {
 //   try {
@@ -95,10 +68,9 @@ async function extractTextFromPPTX(filePath) {
 // }
 
 // Example usage
-const filePath = 'CS3060 OL Sensing.pptx'; // Replace with path to your .txt, .pdf, or .pptx file
-summarizeFile(filePath)
+// const filePath = 'CS3060 OL Sensing.pptx'; // Replace with path to your .txt, .pdf, or .pptx file
+// summarizeFile(filePath)
 
 module.exports = {
-  getChatGPTSummary,
-  extractTextFromPPTX
+  getChatGPTSummary
 };
