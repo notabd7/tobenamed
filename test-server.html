@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test File Upload</title>
+    <title>Test File Upload and Supabase Connection</title>
 </head>
 <body>
     <h2>Test Summarize Endpoint</h2>
@@ -17,5 +17,22 @@
         <input type="file" name="file">
         <button type="submit">Generate Quiz</button>
     </form>
+
+    <h2>Test Supabase Connection</h2>
+    <button onclick="testSupabase()">Test Supabase Connection</button>
+    <p id="supabaseResult"></p>
+
+    <script>
+        async function testSupabase() {
+            try {
+                const response = await fetch('http://localhost:3000/test-supabase');
+                const result = await response.json();
+                document.getElementById('supabaseResult').textContent = JSON.stringify(result, null, 2);
+            } catch (error) {
+                console.error('Error testing Supabase connection:', error);
+                document.getElementById('supabaseResult').textContent = 'Error: ' + error.message;
+            }
+        }
+    </script>
 </body>
 </html>
