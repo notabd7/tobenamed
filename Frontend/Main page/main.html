@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Study Material Overview</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- Container for tabs and content -->
+    <div class="container">
+
+        <!-- Tab Navigation -->
+        <div class="tab-container">
+            <button class="tab-link active" onclick="openTab(event, 'summary')">Summary</button>
+            <button class="tab-link" onclick="openTab(event, 'flashcards')">Flashcards</button>
+            <button class="tab-link" onclick="openTab(event, 'test-yourself')">Test yourself!</button>
+        </div>
+
+        <!-- Tab Content -->
+        <div id="summary" class="tab-content active-content">
+            <h2>Summary of Your Study Materials</h2>
+            <p>This is where the summary of the uploaded study materials will appear.</p>
+        </div>
+
+        <div id="flashcards" class="tab-content">
+            <h2>Your Flashcards</h2>
+            <p>This section will automatically generate flashcards from your study materials.</p>
+        </div>
+
+        <div id="test-yourself" class="tab-content">
+            <h2>Test Yourself!</h2>
+            <p>Practice your knowledge by taking a quiz based on your study materials.</p>
+        </div>
+
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
