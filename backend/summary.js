@@ -11,7 +11,7 @@ if (!apiKey) {
 }
 
 
-async function getChatGPTFlashCards(textContent) {
+async function getChatGPTSummary(textContent) {
   try {
     const response = await axios.post(
       'https://api.openai.com/v1/chat/completions',
@@ -20,11 +20,11 @@ async function getChatGPTFlashCards(textContent) {
         messages: [
           {
             role: 'system',
-            content: 'You are a helpful assistant that summarizes text.'
+            content: 'You are a helpful assistant that summarizes text in an accurate and precise manner.'
           },
           {
             role: 'user',
-            content: `Return me a summary in the form of bullet points of the following content: ${textContent}`
+            content: `Return me a summary in the form of short concise and informative paragraphs that cover the whole topic: ${textContent}`
           }
         ],
         temperature: 0.5,
@@ -72,5 +72,5 @@ async function getChatGPTFlashCards(textContent) {
 // summarizeFile(filePath)
 
 module.exports = {
-  getChatGPTFlashCards
+  getChatGPTSummary
 };

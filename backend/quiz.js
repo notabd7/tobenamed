@@ -24,7 +24,7 @@ async function generateQuiz(textContent, summary) {
           },
           {
             role: 'user',
-            content: `Based on the following content, generate multiple-choice questions that cover the whole topic. Each question should have 4 options (A, B, C, D) with one correct answer. Format your response as a JSON array of objects, where each object represents a question with properties: question, options (an array of 4 strings), and correctAnswer (the letter of the correct option).
+            content: `Based on the following content, generate multiple-choice questions that cover the whole topic. Each question should have 4 options with one correct answer. Format your response as a JSON array of objects, where each object represents a question with properties: question, options (an array of 4 strings dont include the letters for the options like 'A', 'B', 'C', 'D'), and correctAnswer.
             Content: ${textContent}
             Summary: ${summary}
             Generate the quiz questions:`

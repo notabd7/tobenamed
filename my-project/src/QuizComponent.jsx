@@ -1,29 +1,11 @@
-import React, { useState } from 'react'
-
-const quizData = [
-  {
-    question: "When did the American Revolution begin?",
-    options: ["1765", "1776", "1783", "1789"],
-    correctAnswer: 0
-  },
-  {
-    question: "Who was NOT a key figure in the American Revolution?",
-    options: ["George Washington", "Thomas Jefferson", "Benjamin Franklin", "Abraham Lincoln"],
-    correctAnswer: 3
-  },
-  {
-    question: "What event marked the beginning of open armed conflict?",
-    options: ["Boston Tea Party", "Signing of Declaration of Independence", "Battles of Lexington and Concord", "Treaty of Paris"],
-    correctAnswer: 2
-  },
-  {
-    question: "When was the Declaration of Independence signed?",
-    options: ["July 2, 1776", "July 4, 1776", "August 2, 1776", "September 3, 1783"],
-    correctAnswer: 1
-  },
-]
+import { useState } from 'react'
+import { useLocation } from 'react-router-dom';
 
 export default function QuizComponent() {
+  const location = useLocation();
+  const quizData = location.state?.quizData || [];
+  console.log('quiz baby', quizData)
+
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [score, setScore] = useState(0)
   const [showScore, setShowScore] = useState(false)
@@ -32,10 +14,8 @@ export default function QuizComponent() {
 
   const handleAnswerClick = (selectedOption) => {
     if (isAnswerChecked) return; // Prevent selecting another answer after checking
-
     setSelectedAnswer(selectedOption)
     setIsAnswerChecked(true)
-
     if (selectedOption === quizData[currentQuestion].correctAnswer) {
       setScore(score + 1)
     }
@@ -60,11 +40,17 @@ export default function QuizComponent() {
     setIsAnswerChecked(false)
   }
 
-  const getButtonColor = (index) => {
+  const getButtonColor = (option) => {
     if (!isAnswerChecked) return 'bg-gray-100 hover:bg-gray-200'
-    if (index === quizData[currentQuestion].correctAnswer) return 'bg-green-500 text-white'
-    if (index === selectedAnswer) return 'bg-red-500 text-white'
+    if (option === quizData[currentQuestion].correctAnswer) {
+      return 'bg-green-500 text-white'
+    }
+    if (option === selectedAnswer) return 'bg-red-500 text-white'
     return 'bg-gray-100'
+  }
+
+  if (quizData.length === 0) {
+    return <div>No quiz data available. Please upload a file to generate a quiz.</div>
   }
 
   return (
@@ -91,8 +77,8 @@ export default function QuizComponent() {
               {quizData[currentQuestion].options.map((option, index) => (
                 <button
                   key={index}
-                  onClick={() => handleAnswerClick(index)}
-                  className={`w-full p-2 text-left rounded transition-colors ${getButtonColor(index)}`}
+                  onClick={() => handleAnswerClick(option)}
+                  className={`w-full p-2 text-left rounded transition-colors ${getButtonColor(option)}`}
                   disabled={isAnswerChecked}
                 >
                   {option}

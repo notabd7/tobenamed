@@ -1,55 +1,60 @@
-import React, { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-
-const flashcardsData = [
-  { question: "When did the American Revolution begin?", answer: "1765" },
-  { question: "What was the significance of the Boston Tea Party?", answer: "It was a protest against British taxation policies" },
-  { question: "Who was the primary author of the Declaration of Independence?", answer: "Thomas Jefferson" },
-  { question: "When was the Declaration of Independence signed?", answer: "July 4, 1776" },
-  { question: "What treaty ended the American Revolutionary War?", answer: "The Treaty of Paris (1783)" },
-]
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useLocation } from 'react-router-dom';
 
 export default function FlashcardsComponent() {
-  const [currentCard, setCurrentCard] = useState(0)
-  const [isFlipped, setIsFlipped] = useState(false)
-  const [direction, setDirection] = useState(0)
+  const location = useLocation();
+  const { flashcardsData: rawFlashcardsData } = location.state || {};
+  
+  const [flashcards, setFlashcards] = useState([]);
+  const [currentCard, setCurrentCard] = useState(0);
+  const [isFlipped, setIsFlipped] = useState(false);
+  const [direction, setDirection] = useState(0);
+
+  useEffect(() => {
+    if (rawFlashcardsData) {
+      const processedFlashcards = rawFlashcardsData.split('\n').filter(card => card.trim() !== '');
+      console.log("is it here?", processedFlashcards)
+      setFlashcards(processedFlashcards);
+    }
+  }, [rawFlashcardsData]);
 
   const nextCard = () => {
-    setDirection(1)
-    setIsFlipped(false)
-    setCurrentCard((prev) => (prev + 1) % flashcardsData.length)
-  }
+    setDirection(1);
+    setIsFlipped(false);
+    setCurrentCard((prev) => (prev + 1) % flashcards.length);
+  };
 
   const prevCard = () => {
-    setDirection(-1)
-    setIsFlipped(false)
-    setCurrentCard((prev) => (prev - 1 + flashcardsData.length) % flashcardsData.length)
-  }
+    setDirection(-1);
+    setIsFlipped(false);
+    setCurrentCard((prev) => (prev - 1 + flashcards.length) % flashcards.length);
+  };
 
   const flipCard = () => {
-    setIsFlipped(!isFlipped)
-  }
+    setIsFlipped(!isFlipped);
+  };
 
   const variants = {
-    enter: (direction) => {
-      return {
-        x: direction > 0 ? 1000 : -1000,
-        opacity: 0,
-        zIndex: 0,
-      }
-    },
+    enter: (direction) => ({
+      x: direction > 0 ? 1000 : -1000,
+      opacity: 0,
+      zIndex: 0,
+    }),
     center: {
       x: 0,
       opacity: 1,
       zIndex: 1,
     },
-    exit: (direction) => {
-      return {
-        x: direction < 0 ? 1000 : -1000,
-        opacity: 0,
-        zIndex: 0,
-      }
-    },
+    exit: (direction) => ({
+      x: direction < 0 ? 1000 : -1000,
+      opacity: 0,
+      zIndex: 0,
+    }),
+  };
+
+  if (flashcards.length === 0) {
+    return <div className="text-center text-gray-500">No flashcards available. Please upload a file to generate flashcards.</div>;
   }
 
   return (
@@ -57,9 +62,9 @@ export default function FlashcardsComponent() {
       <h2 className="text-2xl font-bold text-gray-800">Your Flashcards</h2>
       <div className="bg-white p-6 rounded-lg shadow-md">
         <div className="mb-4 text-center">
-          <span className="text-sm text-gray-500">Card {currentCard + 1} of {flashcardsData.length}</span>
+          <span className="text-sm text-gray-500">Card {currentCard + 1} of {flashcards.length}</span>
         </div>
-        <div className="relative h-48 w-full perspective-1000">
+        <div className="relative w-64 h-64 mx-auto perspective-1000">
           <AnimatePresence initial={false} custom={direction}>
             <motion.div
               key={currentCard}
@@ -82,20 +87,20 @@ export default function FlashcardsComponent() {
                 style={{ backfaceVisibility: 'hidden' }}
               >
                 <p className="text-xl text-center">
-                  {isFlipped ? flashcardsData[currentCard].answer : flashcardsData[currentCard].question}
+                  {flashcards[currentCard]}
                 </p>
               </motion.div>
             </motion.div>
           </AnimatePresence>
         </div>
         <div className="mt-4 flex justify-between">
-          <button 
+          <button
             onClick={prevCard}
             className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors"
           >
             Previous
           </button>
-          <button 
+          <button
             onClick={nextCard}
             className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
           >
@@ -104,5 +109,5 @@ export default function FlashcardsComponent() {
         </div>
       </div>
     </div>
-  )
+  );
 }
