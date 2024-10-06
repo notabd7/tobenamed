@@ -95,7 +95,6 @@ const LandingPage = () => {
     setUploadedFiles(prevFiles => prevFiles.filter((_, i) => i !== index));
   };
 
-  
   return (
     <div 
       className={`min-h-screen flex flex-col items-center justify-between p-8 ${isDragging ? 'bg-orange-100' : 'bg-gray-50'}`}
@@ -112,23 +111,29 @@ const LandingPage = () => {
         </div>
 
         <div className="w-full max-w-md flex flex-col items-center space-y-8 mb-auto">
-          {!isLoading && (
-            <div className="w-full flex flex-col items-center">
-              <label htmlFor="file-upload" className="w-full">
-                <div className="bg-custom-orange-500 text-white text-3xl font-semibold py-6 px-12 rounded-full text-center cursor-pointer hover:bg-custom-red-500 transition-colors">
-                  Select your study materials!
-                </div>
-              </label>
-              <input 
-                id="file-upload" 
-                type="file" 
-                className="hidden" 
-                onChange={handleFileInputChange}
-                multiple
-              />
-              <p className="text-center mt-2 text-gray-500">or drop files here</p>
-            </div>
-          )}
+          {/* Always render the file upload section */}
+          <div className="w-full flex flex-col items-center">
+            <label htmlFor="file-upload" className="w-full">
+              <div
+                className={`text-white text-3xl font-semibold py-6 px-12 rounded-full text-center ${
+                  isLoading
+                    ? 'bg-gray-400 cursor-not-allowed'
+                    : 'bg-custom-orange-500 cursor-pointer hover:bg-custom-red-500 transition-colors'
+                }`}
+              >
+                Select your study materials!
+              </div>
+            </label>
+            <input 
+              id="file-upload" 
+              type="file" 
+              className="hidden" 
+              onChange={handleFileInputChange}
+              multiple
+              disabled={isLoading}
+            />
+            <p className="text-center mt-2 text-gray-500">or drop files here</p>
+          </div>
 
           {uploadedFiles.length > 0 && (
             <div className="w-full max-w-md flex justify-center">
