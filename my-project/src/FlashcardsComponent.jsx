@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Document, Page, View, Text, StyleSheet, PDFViewer } from '@react-pdf/renderer';
 import { Printer } from 'lucide-react';
 
-// Define styles for PDF
+// Define styles for PDF (unchanged)
 const styles = StyleSheet.create({
   page: {
     flexDirection: 'row',
@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
   },
 });
 
-// PDF Document component
+// PDF Document component (unchanged)
 const FlashcardsPDF = ({ flashCards }) => (
   <Document>
     {[...Array(Math.ceil(flashCards.length / 6))].map((_, pageIndex) => (
@@ -133,21 +133,21 @@ export default function FlashcardsComponent() {
   }
 
   return (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-gray-800">Your Flashcards</h2>
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <div className="mb-4 flex justify-between items-center">
-          <span className="text-sm text-gray-500">
+    <div className="space-y-9">
+      <h2 className="text-4xl font-bold text-gray-800">Your Flashcards</h2>
+      <div className="bg-white p-9 rounded-xl shadow-lg">
+        <div className="mb-6 flex justify-between items-center">
+          <span className="text-xl text-gray-500">
             Card {currentCard + 1} of {flashCards.length}
           </span>
           <button
             onClick={togglePDFPreview}
-            className="p-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition-colors"
+            className="p-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors"
           >
-            <Printer size={20} />
+            <Printer size={24} />
           </button>
         </div>
-        <div className="relative w-64 h-64 mx-auto perspective-1000">
+        <div className="relative w-96 h-96 mx-auto perspective-1000">
           <AnimatePresence initial={false} custom={direction}>
             <motion.div
               key={currentCard}
@@ -163,7 +163,7 @@ export default function FlashcardsComponent() {
               className="absolute w-full h-full"
             >
               <motion.div
-                className="w-full h-full bg-gray-100 rounded-lg shadow-md cursor-pointer flex items-center justify-center p-4"
+                className="w-full h-full bg-gray-100 rounded-2xl shadow-lg cursor-pointer flex items-center justify-center p-8"
                 onClick={flipCard}
                 animate={{ rotateY: isFlipped ? 180 : 0 }}
                 transition={{ duration: 0.6 }}
@@ -173,45 +173,45 @@ export default function FlashcardsComponent() {
                 }}
               >
                 <motion.div
-                  className="absolute w-full h-full flex items-center justify-center p-4 backface-hidden"
+                  className="absolute w-full h-full flex items-center justify-center p-8 backface-hidden"
                   initial={{ opacity: 1 }}
                   animate={{ opacity: isFlipped ? 0 : 1 }}
                   transition={{ duration: 0.3 }}
                   style={{ transform: 'rotateY(0deg)' }}
                 >
-                  <p className="text-xl text-center">{flashCards[currentCard]?.question}</p>
+                  <p className="text-3xl text-center">{flashCards[currentCard]?.question}</p>
                 </motion.div>
                 <motion.div
-                  className="absolute w-full h-full flex items-center justify-center p-4 backface-hidden"
+                  className="absolute w-full h-full flex items-center justify-center p-8 backface-hidden"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: isFlipped ? 1 : 0 }}
                   transition={{ duration: 0.3 }}
                   style={{ transform: 'rotateY(180deg)' }}
                 >
-                  <p className="text-xl text-center">{flashCards[currentCard]?.answer}</p>
+                  <p className="text-3xl text-center">{flashCards[currentCard]?.answer}</p>
                 </motion.div>
               </motion.div>
             </motion.div>
           </AnimatePresence>
         </div>
-        <div className="mt-4 flex justify-between">
+        <div className="mt-8 flex justify-between">
           <button
             onClick={prevCard}
-            className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors"
+            className="px-6 py-3 text-xl bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
           >
             Previous
           </button>
           <button
             onClick={nextCard}
-            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+            className="px-6 py-3 text-xl bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
           >
             Next
           </button>
         </div>
         {showPDFPreview && (
-          <div className="mt-4">
-            <h3 className="text-lg font-semibold mb-2">PDF Preview</h3>
-            <PDFViewer width="100%" height={500}>
+          <div className="mt-8">
+            <h3 className="text-2xl font-semibold mb-4">PDF Preview</h3>
+            <PDFViewer width="100%" height={600}>
               <FlashcardsPDF flashCards={flashCards} />
             </PDFViewer>
           </div>

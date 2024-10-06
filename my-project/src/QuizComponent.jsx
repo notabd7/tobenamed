@@ -17,7 +17,6 @@ export default function QuizComponent() {
   const [resources, setResources] = useState([])
   const [resourceError, setResourceError] = useState(null)
 
-
   const handleAnswerClick = (selectedOption) => {
     if (isAnswerChecked) return; // Prevent selecting another answer after checking
     setSelectedAnswer(selectedOption)
@@ -48,13 +47,13 @@ export default function QuizComponent() {
   const sendRevisionRequest = async () => {
     try {
       const response = await axios.post('http://localhost:3000/revision', { wrongAnswers });
-      console.log('Revision Data:', response.data); // Log the revision data
+      console.log('Revision Data:', response.data);
       setRevisionData(response.data);
 
       if (response.data && response.data.subTopic) {
         try {
           const fetchedResources = await fetchResources(response.data.subTopic);
-          console.log('Fetched Resources:', fetchedResources); // Log the fetched resources
+          console.log('Fetched Resources:', fetchedResources);
           if (Array.isArray(fetchedResources)) {
             setResources(fetchedResources);
           } else {
@@ -80,8 +79,7 @@ export default function QuizComponent() {
     setSelectedAnswer(null)
     setIsAnswerChecked(false)
     setWrongAnswers([])
-    setRevision('')
-    setRevisionData(null) // Reset revision data
+    setRevisionData(null)
   }
 
   const getButtonColor = (option) => {
@@ -94,32 +92,32 @@ export default function QuizComponent() {
   }
 
   if (quizData.length === 0) {
-    return <div>No quiz data available. Please upload a file to generate a quiz.</div>
+    return <div className="text-2xl">No quiz data available. Please upload a file to generate a quiz.</div>
   }
 
   return (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-gray-800">Test Yourself!</h2>
-      <div className="bg-white p-6 rounded-lg shadow-md">
+    <div className="space-y-9">
+      <h2 className="text-4xl font-bold text-gray-800">Test Yourself!</h2>
+      <div className="bg-white p-9 rounded-xl shadow-lg">
         {showScore ? (
           <div className="text-center">
-            <h3 className="text-xl font-semibold mb-4">You scored {score} out of {quizData.length}</h3>
+            <h3 className="text-3xl font-semibold mb-6">You scored {score} out of {quizData.length}</h3>
             {revisionData && (
-              <div className="mt-4 text-left">
-                <h4 className="font-semibold">Revision Guide: {revisionData.subTopic}</h4>
-                <p className="mt-2">{revisionData.message}</p>
-                <h5 className="font-semibold mt-3">Strategies to Improve:</h5>
-                <ul className="list-disc list-inside">
+              <div className="mt-6 text-left text-xl">
+                <h4 className="text-2xl font-semibold">Revision Guide: {revisionData.subTopic}</h4>
+                <p className="mt-4">{revisionData.message}</p>
+                <h5 className="text-2xl font-semibold mt-6">Strategies to Improve:</h5>
+                <ul className="list-disc list-inside mt-4">
                   {revisionData.strategies.map((strategy, index) => (
-                    <li key={index}>{strategy}</li>
+                    <li key={index} className="mb-2">{strategy}</li>
                   ))}
                 </ul>
                 {resources.length > 0 ? (
-                  <div className="mt-4">
-                    <h5 className="font-semibold">Additional Resources:</h5>
-                    <ul className="list-disc list-inside">
+                  <div className="mt-6">
+                    <h5 className="text-2xl font-semibold">Additional Resources:</h5>
+                    <ul className="list-disc list-inside mt-4">
                       {resources.map((resource, index) => (
-                        <li key={index}>
+                        <li key={index} className="mb-2">
                           <a href={resource.url} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
                             {resource.title}
                           </a>
@@ -128,31 +126,31 @@ export default function QuizComponent() {
                     </ul>
                   </div>
                 ) : resourceError ? (
-                  <p className="mt-4 text-red-500">{resourceError}</p>
+                  <p className="mt-6 text-red-500">{resourceError}</p>
                 ) : (
-                  <p className="mt-4">No additional resources found.</p>
+                  <p className="mt-6">No additional resources found.</p>
                 )}
               </div>
             )}
             <button
               onClick={restartQuiz}
-              className="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+              className="mt-8 px-6 py-3 text-xl bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
             >
               Restart Quiz
             </button>
           </div>
         ) : (
           <>
-            <div className="mb-4">
-              <span className="text-sm text-gray-500">Question {currentQuestion + 1} of {quizData.length}</span>
+            <div className="mb-6">
+              <span className="text-lg text-gray-500">Question {currentQuestion + 1} of {quizData.length}</span>
             </div>
-            <h3 className="text-xl font-semibold mb-4">{quizData[currentQuestion].question}</h3>
-            <div className="space-y-2">
+            <h3 className="text-3xl font-semibold mb-6">{quizData[currentQuestion].question}</h3>
+            <div className="space-y-4">
               {quizData[currentQuestion].options.map((option, index) => (
                 <button
                   key={index}
                   onClick={() => handleAnswerClick(option)}
-                  className={`w-full p-2 text-left rounded transition-colors ${getButtonColor(option)}`}
+                  className={`w-full p-4 text-xl text-left rounded-lg transition-colors ${getButtonColor(option)}`}
                   disabled={isAnswerChecked}
                 >
                   {option}
@@ -160,10 +158,10 @@ export default function QuizComponent() {
               ))}
             </div>
             {isAnswerChecked && (
-              <div className="mt-4 flex justify-end">
+              <div className="mt-8 flex justify-end">
                 <button
                   onClick={handleNextQuestion}
-                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+                  className="px-6 py-3 text-xl bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                 >
                   Next
                 </button>

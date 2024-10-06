@@ -112,9 +112,9 @@ const LandingPage = () => {
           </p>
         </div>
 
-        <div className="w-full max-w-md">
+        <div className="w-full max-w-md flex flex-col items-center">
           <label htmlFor="file-upload" className="w-full">
-            <div className="bg-orange-500 text-white text-3xl font-semibold py-6 px-12 rounded-lg text-center cursor-pointer hover:bg-orange-600 transition-colors">
+            <div className="bg-orange-500 text-white text-3xl font-semibold py-6 px-12 rounded-full text-center cursor-pointer hover:bg-orange-600 transition-colors">
               {isLoading ? 'Processing...' : 'Select your study materials!'}
             </div>
           </label>
@@ -130,7 +130,6 @@ const LandingPage = () => {
 
         {uploadedFiles.length > 0 && (
           <div className={`w-full max-w-md p-4 rounded-lg ${isDragging ? 'bg-gray-200' : 'bg-gray-50'}`}>
-            
             <div className="grid grid-cols-2 gap-4">
               {uploadedFiles.map((file, index) => (
                 <div key={index} className="flex flex-col items-center space-y-2">
@@ -145,7 +144,7 @@ const LandingPage = () => {
         {uploadedFiles.length > 0 && !isLoading && (
           <button
             onClick={handleStudyClick}
-            className="bg-orange-500 text-white text-3xl font-semibold py-6 px-12 rounded-lg hover:bg-orange-600 transition-colors"
+            className="bg-orange-500 text-white text-3xl font-semibold py-6 px-12 rounded-full hover:bg-orange-600 transition-colors"
           >
             Let's study!
           </button>
@@ -160,7 +159,7 @@ const LandingPage = () => {
 
       <div className="w-full flex justify-between items-end mt-8">
         <div></div>
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-gray-500 ml-60">
           Your files are secure and private. We don't share your study materials.
         </p>
         <div className="bg-white p-4 rounded-lg shadow-md">
