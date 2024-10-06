@@ -29,18 +29,17 @@ const LandingPage = () => {
           axios.post('http://localhost:3000/flashcards', formData, {
             headers: { 'Content-Type': 'multipart/form-data' }
           }),
-
         ]);
 
         console.log('Quiz generation response:', quizResponse.data);
         console.log('Summary response:', summaryResponse.data);
-        console.log('Flash Card response:', flashCardResponse.data.flashcards)
+        console.log('Flash Card response:', flashCardResponse.data.flashCards);
 
         navigate('/overview', { 
           state: { 
             quizData: quizResponse.data.quiz,
             summaryData: summaryResponse.data.summary,
-            flashCardData: flashCardResponse.data.flashcards,
+            flashCardData: flashCardResponse.data.flashCards, // Note the capital 'C' in flashCards
             isLoading: false
           } 
         });

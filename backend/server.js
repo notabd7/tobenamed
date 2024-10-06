@@ -52,13 +52,25 @@ app.post('/summarize', upload.single('file'), extractText, async (req, res) => {
 });
 
 app.post('/flashcards', upload.single('file'), extractText, async (req, res) => {
-  try {
-    const flashcards = await getChatGPTFlashCards(req.extractedText);
-    res.json({ flashcards });
-  } catch (error) {
-    console.error('Error in flashcards endpoint:', error);
-    res.status(500).send('An error occurred while creating flashcards.');
-  }
+    try {
+        const flashCards = await getChatGPTFlashCards(req.extractedText);
+        if (flashCards.error) {
+          console.error('Error generating quiz:', flashCards.error);
+          res.status(500).json({ error: flashCards.error, details: flashCards.details || flashCards.rawContent });
+        } else {
+          res.json({ flashCards });
+        }
+      } catch (error) {
+        console.error('Error in flashcards endpoint:', error);
+        res.status(500).send('An error occurred while generating the flashcards.');
+      }
+//   try {
+//     const flashcards = await getChatGPTFlashCards(req.extractedText);
+//     res.json({ flashcards });
+//   } catch (error) {
+//     console.error('Error in flashcards endpoint:', error);
+//     res.status(500).send('An error occurred while creating flashcards.');
+//   }
 });
 
 app.post('/generate-quiz', upload.single('file'), extractText, async (req, res) => {

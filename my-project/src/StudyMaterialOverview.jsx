@@ -7,13 +7,14 @@ import QuizComponent from './QuizComponent'
 export default function StudyMaterialOverview() {
   const [activeTab, setActiveTab] = useState('summary')
   const location = useLocation()
+  const { summaryData, flashcardsData, quizData, isLoading } = location.state || {}
 
   useEffect(() => {
-    if (location.state && location.state.filesUploaded) {
-      console.log(`${location.state.filesUploaded} files were uploaded`)
-      // Here you would typically fetch the processed data for these files
-    }
-  }, [location])
+    console.log("Summary Data:", summaryData)
+    console.log("Flashcards Data:", flashcardsData)
+    console.log("Quiz Data:", quizData)
+    console.log("Is Loading:", isLoading)
+  }, [summaryData, flashcardsData, quizData, isLoading])
 
   const openTab = (tabName) => {
     setActiveTab(tabName)
@@ -43,11 +44,10 @@ export default function StudyMaterialOverview() {
             </button>
           ))}
         </div>
-
         <div className="bg-white p-5 rounded-lg shadow-md z-10">
-          {activeTab === 'summary' && <SummaryComponent />}
-          {activeTab === 'flashcards' && <FlashcardsComponent />}
-          {activeTab === 'test-yourself' && <QuizComponent />}
+          {activeTab === 'summary' && <SummaryComponent summaryData={summaryData} />}
+          {activeTab === 'flashcards' && <FlashcardsComponent flashcardsData={flashcardsData} />}
+          {activeTab === 'test-yourself' && <QuizComponent quizData={quizData} />}
         </div>
       </div>
     </div>

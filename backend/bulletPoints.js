@@ -20,11 +20,12 @@ async function getChatGPTFlashCards(textContent) {
         messages: [
           {
             role: 'system',
-            content: 'You are a helpful assistant that summarizes text.'
+            content: 'You are a helpful assistant that creates flashcards based on a study material.'
           },
-          {
-            role: 'user',
-            content: `Return me a summary in the form of bullet points of the following content: ${textContent}`
+          {role: 'user',
+            content: `Based on the following content, generate flashcards that cover the whole topic. Each flashcard should be question with its correct answer. Format your response as a JSON array of objects, where each object represents the question and its answer.
+            Content: ${textContent}
+            Generate the flashcards:`
           }
         ],
         temperature: 0.5,
