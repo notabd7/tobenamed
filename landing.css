@@ -1,0 +1,184 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #FFFFFF; /* Light background for a clean look */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Align items at the top */
+    height: 100vh;
+    color: #333333; /* Dark gray text */
+    overflow: hidden;
+    transition: background-color 0.3s ease;
+    padding-top: 50px; /* Add padding at the top to push everything down a bit */
+}
+
+/* Container for all content */
+.container {
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+/* Main Heading */
+h1 {
+    font-size: 4rem;
+    margin-bottom: 30px; /* Spacing between heading and button */
+}
+
+/* Subtext below the heading */
+.subtext {
+    font-size: 1.3rem;
+    margin-bottom: 100px; /* Spacing between subtext and button */
+    color: #555; /* Lighter gray for subtext */
+}
+
+/* Upload Button (Bigger and with Shadow) */
+.upload-btn {
+    padding: 25px 50px; /* Larger padding for a bigger button */
+    background-color: #FF5722; /* Bold red for CTA */
+    color: white;
+    border: none;
+    border-radius: 8px; /* Slightly rounder corners */
+    font-size: 1.5rem; /* Larger font size */
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    margin-bottom: 20px; /* Space below the button */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Slight shadow for depth */
+    margin-top:100px;
+}
+
+.upload-btn:hover {
+    background-color: #D43F3F; /* Darker red on hover */
+    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.20); /* Enhance shadow on hover for more depth */
+}
+
+
+
+/* Visual Feedback for Drag-and-Drop */
+body.dragover {
+    background-color: #FFEEE6; /* Light red background when dragging files */
+}
+
+#study-btn {
+    position: fixed;          /* Fix the button to the bottom of the viewport */
+    bottom: 60px;             /* Adjusted to make space for the privacy message */
+    left: 50%;                /* Center horizontally */
+    transform: translateX(-50%); /* Offset the button to perfectly center it */
+    padding: 15px 30px;       /* Larger padding for a bigger button */
+    font-size: 1.2rem;        /* Slightly larger font */
+    background-color: #FF5722; /* Bold red color */
+    color: white;
+    border: none;
+    border-radius: 8px;       /* Rounded corners */
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Slight shadow for depth */
+}
+
+#study-btn:hover {
+    background-color: #D43F3F; /* Darker red on hover */
+    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.2); /* Enhanced shadow on hover */
+}
+
+/* Position the privacy note right below the "Let's study!" button */
+.privacy-note {
+    position: fixed;
+    bottom: 20px;            /* 20px from the bottom */
+    left: 50%;               /* Center it horizontally */
+    transform: translateX(-50%); /* Ensure it's centered properly */
+    font-size: 0.9rem;        /* Slightly smaller font size */
+    color: #888;             /* Light gray color */
+}
+
+/* Styling for uploaded files */
+.file-list {
+    margin-top: 0px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.file-item {
+    display: flex;
+    flex-direction: column;  /* Stack the icon and name vertically */
+    align-items: center;     /* Center them horizontally */
+    background-color: #f1f1f1;
+    padding: 15px;           /* Adjusted padding */
+    margin: 10px;
+    border-radius: 5px;
+    font-size: 1rem;
+    color: #333;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    width: 120px;            /* Set a fixed width for the file item */
+    overflow: hidden;        /* Prevent content from overflowing */
+}
+
+/* Icon styling */
+.file-icon {
+    width: 70px;
+    height: 70px;
+    margin-bottom: 10px;  /* Reduced space between icon and name */
+}
+
+/* File name styling with two-line truncation */
+.file-name {
+    font-size: 1rem;
+    text-align: center;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;   /* Limit to two lines */
+    -webkit-box-orient: vertical;
+    overflow: hidden;        /* Hide overflow content */
+    text-overflow: ellipsis; /* Show "..." when text is too long */
+    word-wrap: break-word;   /* Break long words if necessary */
+    width: 100%;             /* Set width to match the file item width */
+}
+
+/* Save Progress Box */
+.save-progress-box {
+    position: fixed;
+    bottom: 20px; /* Position it slightly above the bottom */
+    right: 20px;  /* Position it slightly away from the right edge */
+    background-color: #f9f9f9; /* Light background */
+    border: 1px solid #ccc;  /* Light gray border */
+    border-radius: 8px;  /* Rounded corners */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    padding: 20px;  /* Add padding inside the box */
+    width: 250px;  /* Set a fixed width for the box */
+    z-index: 100;  /* Ensure it stays on top of other content */
+    text-align: center; /* Center the text and buttons inside */
+}
+
+/* Text inside the Save Progress Box */
+.save-progress-box p {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 15px;  /* Add space between the text and buttons */
+}
+
+/* Buttons inside the Save Progress Box */
+.auth-buttons {
+    display: flex;
+    justify-content: space-around;
+}
+
+/* Styling for the Sign Up and Log In buttons */
+.signup-btn, .login-btn {
+    padding: 10px 20px;
+    background-color: #FF5722;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease;
+}
+
+.signup-btn:hover, .login-btn:hover {
+    background-color: #D43F3F;  /* Darker red on hover */
+}

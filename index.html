@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Study Material Platform</title>
+    
+    <link rel="stylesheet" href="landing.css"> <!-- CSS for landing page -->
+    <link rel="stylesheet" href="main.css"> <!-- CSS for main page -->
+
+</head>
+<body>
+
+    <!-- Landing Page -->
+    <div id="landing-page" class="container">
+        <!-- Explainer Text -->
+        <h1>Need help studying?</h1>
+        <p class="subtext">Upload your notes, presentations, textbooks, and more to instantly generate flashcards and quizzes.</p>
+
+        <!-- Upload Section -->
+        <div class="upload-area" id="upload-area">
+            <button class="upload-btn" onclick="document.getElementById('file-input').click();">Select your study materials!</button>
+            <p id="upload-instructions">or drop files here</p>
+            <input type="file" id="file-input" multiple style="display: none;">
+        </div>
+
+        <!-- Uploaded Files Display -->
+        <div id="file-list" class="file-list">
+            <!-- Icons of uploaded files will appear here -->
+        </div>
+
+        <!-- Let's Study Button (Initially hidden) -->
+        <button id="study-btn" class="upload-btn" style="display: none;" onclick="goToMainPage()">Let's study!</button>
+
+        <!-- Privacy Note -->
+        <p class="privacy-note">Your files are secure and private. We don't share your study materials.</p>
+    </div>
+
+    <!-- Main Page (Hidden by default) -->
+    <div id="main-page" class="container" style="display: none;">
+        <!-- Tab Navigation -->
+        <div class="tab-container">
+            <button class="tab-link active" onclick="openTab(event, 'summary')">Summary</button>
+            <button class="tab-link" onclick="openTab(event, 'flashcards')">Flashcards</button>
+            <button class="tab-link" onclick="openTab(event, 'test-yourself')">Test yourself!</button>
+        </div>
+
+        <!-- Tab Content -->
+        <div id="summary" class="tab-content active-content">
+            <h2>Summary of Your Study Materials</h2>
+            <p>This is where the summary of the uploaded study materials will appear.</p>
+        </div>
+
+        <div id="flashcards" class="tab-content">
+            <h2>Your Flashcards</h2>
+            <p>This section will automatically generate flashcards from your study materials.</p>
+        </div>
+
+        <div id="test-yourself" class="tab-content">
+            <h2>Test Yourself!</h2>
+            <p>Practice your knowledge by taking a quiz based on your study materials.</p>
+        </div>
+    </div>
+
+    <!-- Progress Save Box -->
+    <div class="save-progress-box">
+        <p>Want to save your progress?</p>
+        <div class="auth-buttons">
+            <button class="signup-btn">Sign Up</button>
+            <button class="login-btn">Log In</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

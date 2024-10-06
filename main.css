@@ -1,0 +1,142 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #F9F9F9; /* Light background for a clean look */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Align items at the top */
+    height: 100vh;
+    color: #333333; /* Dark gray text */
+    overflow: hidden;
+    transition: background-color 0.3s ease;
+    padding-top: 50px;
+}
+
+/* Container for the tabs and content */
+.container {
+    max-width: 90vw; /* Set the container width to 90% of the viewport width */
+    width: 100%; /* Ensure the container scales to full width */
+    margin: 0 auto; /* Center the container */
+    position: relative; /* Needed to position the tabs */
+    z-index: 10; /* Bring content in front of the tabs */
+    padding-top: 0; /* Remove padding to ensure tabs are attached to container */
+}
+
+/* Tab Container */
+.tab-container {
+    display: flex;
+    justify-content: flex-start; /* Align tabs towards the left */
+    position: relative; /* Keep the tabs positioned within the container */
+    top: 0; /* Set to 0 to attach tabs directly to the container */
+    left: 20px; /* Align tabs towards the left */
+    z-index: 5; /* Place tabs behind the page */
+}
+
+/* Individual Tab Links */
+.tab-link {
+    padding: 8px 20px; /* Reduced padding for a thinner, sleeker tab */
+    background-color: #D43F3F;
+    border: 2px solid #CCC;
+    color: white;
+    border-bottom: 0px; /* No bottom border to attach to the container */
+    border-radius: 6px 6px 0 0; /* Slightly rounded top corners */
+    margin-right: 10px; /* Space between tabs */
+    cursor: pointer;
+    font-size: 0.9rem; /* Slightly smaller font for a sleek look */
+    z-index: 5; /* Keep tabs behind */
+    transition: background-color 0.3s ease, border 0.3s ease;
+    opacity: 0.85; /* Slight transparency to make them look further behind */
+}
+
+/* Add hover effect for non-active tabs */
+.tab-link:not(.active):hover {
+    background-color: #FF5722; /* Change background to #FF5722 on hover */
+    color: white;              /* Keep the text white */
+    opacity: 1;                /* Make fully opaque on hover */
+}
+
+/* Active Tab */
+.tab-link.active {
+    background-color: #FFF;
+    color: black;
+    z-index: 10; /* Bring active tab above the content */
+    border-color: #CCC;
+    border-bottom: none; /* Remove bottom border to integrate with the page */
+    opacity: 1; /* Fully opaque */
+}
+
+/* Tab Content */
+.tab-content {
+    display: none; /* Hidden by default */
+    padding: 20px;
+    background-color: #FFF;
+    border-radius: 8px; /* Keep this for content area */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Keep shadow for content area */
+    z-index: 10; /* Content should always be on top */
+}
+
+.tab-content h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.tab-content p {
+    font-size: 1.1rem;
+    color: #555;
+}
+
+/* Active Tab Content */
+.tab-content.active-content {
+    display: block;
+}
+
+/* Save Progress Box */
+.save-progress-box {
+    position: fixed;
+    bottom: 20px; /* Position it slightly above the bottom */
+    right: 20px;  /* Position it slightly away from the right edge */
+    background-color: #f9f9f9; /* Light background */
+    border: 1px solid #ccc;  /* Light gray border */
+    border-radius: 8px;  /* Rounded corners */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    padding: 20px;  /* Add padding inside the box */
+    width: 250px;  /* Set a fixed width for the box */
+    z-index: 100;  /* Ensure it stays on top of other content */
+    text-align: center; /* Center the text and buttons inside */
+}
+
+/* Text inside the Save Progress Box */
+.save-progress-box p {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 15px;  /* Add space between the text and buttons */
+}
+
+/* Buttons inside the Save Progress Box */
+.auth-buttons {
+    display: flex;
+    justify-content: space-around;
+}
+
+/* Styling for the Sign Up and Log In buttons */
+.signup-btn, .login-btn {
+    padding: 10px 20px;
+    background-color: #D43F3F;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease;
+}
+
+.signup-btn:hover, .login-btn:hover {
+    background-color: #FF5722;  /* Darker red on hover */
+}
+
