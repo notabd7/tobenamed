@@ -1,6 +1,6 @@
 # ToBeNamed
 <div align="center">
-  <img alt="banner" src="https://github.com/benson-fm/stockwise/blob/main/frontend/src/assets/logoTitle.png">
+  
 
   ### Stock sentiment analysis powered by Google Gemini
 </div>
