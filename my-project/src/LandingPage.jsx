@@ -2,25 +2,24 @@ import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import debounce from 'lodash/debounce';
+import fileIcon from '/icon.png'; // Import the icon
 
 const LandingPage = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [file, setFile] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState([]);
-  const [processedData, setProcessedData] = useState(null);
   const navigate = useNavigate();
 
-  const processFile = useCallback(
-    debounce(async (file) => {
-      if (!file) return;
-
-      const formData = new FormData();
-      formData.append('file', file);
+  const processFiles = useCallback(
+    debounce(async (files) => {
+      if (files.length === 0) return;
 
       setIsLoading(true);
 
       try {
+        const formData = new FormData();
+        formData.append('file', files[0]); // Only send the first file
+
         const [quizResponse, summaryResponse, flashCardResponse] = await Promise.all([
           axios.post('http://localhost:3000/generate-quiz', formData, {
             headers: { 'Content-Type': 'multipart/form-data' }
@@ -33,24 +32,24 @@ const LandingPage = () => {
           }),
         ]);
 
-        console.log('Quiz generation response:', quizResponse.data);
-        console.log('Summary response:', summaryResponse.data);
-        console.log('Flash Card response:', flashCardResponse.data.flashCards);
-
-        setProcessedData({
+        const processedData = {
           quizData: quizResponse.data.quiz,
           summaryData: summaryResponse.data.summary,
           flashCardData: flashCardResponse.data.flashCards,
-        });
+        };
+
         setIsLoading(false);
+        navigate('/overview', { state: { ...processedData, isLoading: false } });
       } catch (error) {
-        console.error('Error processing file:', error);
+        console.error('Error processing files:', error);
         setIsLoading(false);
         // You might want to set an error state here and display it to the user
       }
     }, 300),
     [navigate]
   );
+
+  const getFileIcon = () => fileIcon;
 
   const handleDragOver = (e) => {
     e.preventDefault();
@@ -72,10 +71,6 @@ const LandingPage = () => {
   const handleFiles = (files) => {
     setUploadedFiles(files);
     console.log('Files uploaded:', files);
-    if (files.length > 0) {
-      setFile(files[0]);
-      processFile(files[0]);
-    }
   };
 
   const handleFileInputChange = (e) => {
@@ -85,16 +80,11 @@ const LandingPage = () => {
     }
   };
 
-  const goToStudyPage = () => {
-    if (processedData) {
-      navigate('/overview', { 
-        state: { 
-          ...processedData,
-          isLoading: false
-        } 
-      });
+  const handleStudyClick = () => {
+    if (uploadedFiles.length > 0) {
+      processFiles(uploadedFiles);
     } else {
-      console.error('No processed data available');
+      console.error('No files uploaded');
       // You might want to show an error message to the user here
     }
   };
@@ -109,20 +99,23 @@ const LandingPage = () => {
 
   return (
     <div 
-      className="min-h-screen flex flex-col items-center justify-between p-8 bg-gray-50"
+      className={`min-h-screen flex flex-col items-center justify-between p-8 ${isDragging ? 'bg-gray-200' : 'bg-gray-50'}`}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
     >
-      <div className="w-full max-w-4xl mx-auto flex-grow flex flex-col items-center justify-center space-y-8">
-        <h1 className="text-6xl font-bold text-gray-800 text-center">Need help studying?</h1>
-        <p className="text-xl text-gray-600 text-center max-w-2xl">
-          Upload your notes, presentations, textbooks, and more to instantly generate flashcards and quizzes.
-        </p>
+      <div className="w-full max-w-4xl mx-auto flex-grow flex flex-col items-center justify-between space-y-8">
+        <div className="text-center">
+          <h1 className="text-6xl font-bold text-gray-800 mb-4">Need help studying?</h1>
+          <p className="text-xl text-gray-600 max-w-2xl">
+            Upload your notes, presentations, textbooks, and more to instantly generate flashcards and quizzes.
+          </p>
+        </div>
+
         <div className="w-full max-w-md">
           <label htmlFor="file-upload" className="w-full">
-            <div className="bg-orange-500 text-white text-2xl font-semibold py-4 px-8 rounded-lg text-center cursor-pointer hover:bg-orange-600 transition-colors">
-              {isLoading ? 'Processing...' : file ? 'Upload selected file' : 'Select your study materials!'}
+            <div className="bg-orange-500 text-white text-3xl font-semibold py-6 px-12 rounded-lg text-center cursor-pointer hover:bg-orange-600 transition-colors">
+              {isLoading ? 'Processing...' : 'Select your study materials!'}
             </div>
           </label>
           <input 
@@ -130,21 +123,45 @@ const LandingPage = () => {
             type="file" 
             className="hidden" 
             onChange={handleFileInputChange}
+            multiple
           />
           <p className="text-center mt-2 text-gray-500">or drop files here</p>
         </div>
-        {processedData && !isLoading && (
+
+        {uploadedFiles.length > 0 && (
+          <div className={`w-full max-w-md p-4 rounded-lg ${isDragging ? 'bg-gray-200' : 'bg-gray-50'}`}>
+            
+            <div className="grid grid-cols-2 gap-4">
+              {uploadedFiles.map((file, index) => (
+                <div key={index} className="flex flex-col items-center space-y-2">
+                  <img src={getFileIcon(file)} alt="File icon" className="w-[100px] h-[100px] object-contain" />
+                  <span className="text-sm text-center">{file.name}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {uploadedFiles.length > 0 && !isLoading && (
           <button
-            onClick={goToStudyPage}
-            className="bg-green-500 text-white text-xl font-semibold py-3 px-6 rounded-lg hover:bg-green-600 transition-colors"
+            onClick={handleStudyClick}
+            className="bg-orange-500 text-white text-3xl font-semibold py-6 px-12 rounded-lg hover:bg-orange-600 transition-colors"
           >
             Let's study!
           </button>
         )}
+
+        {isLoading && (
+          <div className="text-xl font-semibold text-gray-600">
+            Processing your files...
+          </div>
+        )}
       </div>
-      <div className="w-full flex justify-between items-end">
+
+      <div className="w-full flex justify-between items-end mt-8">
+        <div></div>
         <p className="text-sm text-gray-500">
-          Your files are secure and private. We dont share your study materials.
+          Your files are secure and private. We don't share your study materials.
         </p>
         <div className="bg-white p-4 rounded-lg shadow-md">
           <p className="text-gray-700 mb-2">Want to save your progress?</p>
