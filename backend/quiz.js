@@ -20,11 +20,11 @@ async function generateQuiz(textContent, summary) {
         messages: [
           {
             role: 'system',
-            content: 'You are a helpful assistant that generates multiple-choice quiz questions.'
+            content: 'You are a helpful assistant that generates multiple-choice quiz questions, with a json response with the following hard variable names (dont use anything else other than them) questions, options, correctAnswer.'
           },
           {
             role: 'user',
-            content: `Based on the following content, generate multiple-choice questions that cover the whole topic. Each question should have 4 options with one correct answer. Format your response as a JSON array of objects, where each object represents a question with properties: question, options (an array of 4 strings dont include the letters for the options like 'A', 'B', 'C', 'D'), and correctAnswer.
+            content: `Based on the following content, generate multiple-choice questions that cover the whole topic. Each question should have 4 options with one correct answer. Format your response as a JSON array of objects, where each object represents a question with properties: question, options (an array of 4 strings DO NOT include the letters for the options like 'A', 'B', 'C', 'D'), INCLUDE THE ACTUAL STRING OF THE CORRECT ANSWER.
             Content: ${textContent}
             Summary: ${summary}
             Generate the quiz questions:`

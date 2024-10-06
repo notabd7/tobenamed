@@ -1,14 +1,18 @@
 const express = require('express');
-const cors = require('cors');
+const axios = require('axios');
+const cors = require('cors'); //
+require('dotenv').config();
 const { getChatGPTFlashCards } = require('./bulletPoints');
 const { getChatGPTSummary } = require('./summary');
 const { generateQuiz } = require('./quiz');
 const { extractTextFromFile } = require('./textExtraction');
+const { generateRevision } = require ('./revision')
 const multer = require('multer');
 const path = require('path');
 const supabase = require('../config/supaBaseClient');
 
 const app = express();
+const SERP_API_KEY = process.env.SERP_API_KEY;
 const port = process.env.PORT || 3000;
 
 // Middleware
@@ -88,6 +92,51 @@ app.post('/generate-quiz', upload.single('file'), extractText, async (req, res) 
     res.status(500).send('An error occurred while generating the quiz.');
   }
 });
+
+
+app.post('/revision', async (req, res) => {
+    try {
+      const { wrongAnswers } = req.body;
+      const revisionData = await generateRevision(wrongAnswers);
+      res.json(revisionData);
+    } catch (error) {
+      console.error('Error in revision endpoint:', error);
+      res.status(500).json({ error: 'An error occurred while generating the revision guide.' });
+    }
+  });
+
+  app.get('/api/resources', async (req, res) => {
+    const { topic } = req.query;
+  
+    if (!topic) {
+      return res.status(400).json({ error: 'No topic provided' });
+    }
+  
+    try {
+      const response = await axios.get('https://serpapi.com/search', {
+        params: {
+          q: `${topic} tutorial OR guide OR explanation`,
+          api_key: SERP_API_KEY,
+          num: 5
+        }
+      });
+  
+      if (!response.data || !response.data.organic_results) {
+        return res.status(500).json({ error: 'Unexpected response structure from SERP API' });
+      }
+  
+      const resources = response.data.organic_results.map(result => ({
+        title: result.title || 'No title',
+        url: result.link || '#',
+        snippet: result.snippet || 'No description available'
+      }));
+  
+      res.json(resources);
+    } catch (error) {
+      console.error('Error fetching resources:', error.message);
+      res.status(500).json({ error: 'Failed to fetch resources' });
+    }
+  });
 
 // New route to test Supabase connection
 app.get('/test-supabase', async (req, res) => {
