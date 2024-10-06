@@ -1,4 +1,3 @@
-
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import LandingPage from './LandingPage'
 import StudyMaterialOverview from './StudyMaterialOverview'
@@ -12,6 +11,7 @@ function App() {
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/signin" element={<SignIn />} />
+          <Route path="/overview" element={<StudyMaterialOverview />} />
           <Route path="/dashboard" element={<StudyMaterialOverview />} />
           <Route path="/project/:projectId" element={<ProjectPage />} />
         </Routes>
