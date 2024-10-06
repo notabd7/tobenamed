@@ -111,7 +111,6 @@ export default function FlashcardsComponent() {
     setIsFlipped(!isFlipped);
   };
 
-  
   const variants = {
     enter: (direction) => ({
       x: direction > 0 ? 1000 : -1000,
@@ -163,7 +162,7 @@ export default function FlashcardsComponent() {
               animate="center"
               exit="exit"
               transition={{
-                x: { type: "spring", stiffness: 300, damping: 30 },
+                x: { type: 'spring', stiffness: 300, damping: 30 },
                 opacity: { duration: 0.2 },
               }}
               className="absolute w-full h-full"
@@ -174,27 +173,29 @@ export default function FlashcardsComponent() {
                 animate={{ rotateY: isFlipped ? 180 : 0 }}
                 transition={{ duration: 0.6 }}
                 style={{
-                  backfaceVisibility: 'hidden',
                   transformStyle: 'preserve-3d',
                 }}
               >
                 <motion.div
-                  className="absolute w-full h-full flex items-center justify-center p-8 backface-hidden bg-gray-100 rounded-2xl"
-                  initial={{ opacity: 1 }}
-                  animate={{ opacity: isFlipped ? 0 : 1 }}
-                  transition={{ duration: 0.3 }}
-                  style={{ transform: 'rotateY(0deg)' }}
+                  className="absolute w-full h-full flex items-center justify-center p-8 bg-gray-100 rounded-2xl"
+                  style={{
+                    backfaceVisibility: 'hidden',
+                  }}
                 >
-                  <p className="text-3xl text-center overflow-auto max-h-full">{flashCards[currentCard]?.question}</p>
+                  <p className="text-3xl text-center overflow-auto max-h-full">
+                    {flashCards[currentCard]?.question}
+                  </p>
                 </motion.div>
                 <motion.div
-                  className="absolute w-full h-full flex items-center justify-center p-8 backface-hidden bg-gray-100 rounded-2xl"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: isFlipped ? 1 : 0 }}
-                  transition={{ duration: 0.3 }}
-                  style={{ transform: 'rotateY(180deg)' }}
+                  className="absolute w-full h-full flex items-center justify-center p-8 bg-gray-100 rounded-2xl"
+                  style={{
+                    backfaceVisibility: 'hidden',
+                    transform: 'rotateY(180deg)',
+                  }}
                 >
-                  <p className="text-3xl text-center overflow-auto max-h-full">{flashCards[currentCard]?.answer}</p>
+                  <p className="text-3xl text-center overflow-auto max-h-full">
+                    {flashCards[currentCard]?.answer}
+                  </p>
                 </motion.div>
               </motion.div>
             </motion.div>
