@@ -20,11 +20,11 @@ async function getChatGPTSummary(textContent) {
         messages: [
           {
             role: 'system',
-            content: 'You are a helpful assistant that summarizes text in an accurate and precise manner.'
+            content: 'You are a helpful assistant that summarizes text in an accurate and precise manner, and you always give your answer in bullet points.'
           },
           {
             role: 'user',
-            content: `Return me a summary in the form of short concise and informative paragraphs that cover the whole topic: ${textContent}`
+            content: `Return me a summary in the form of bullet points that cover the whole topic: ${textContent}`
           }
         ],
         temperature: 0.5,

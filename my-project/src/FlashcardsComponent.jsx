@@ -1,63 +1,110 @@
-import { useState, useEffect } from 'react'
-import { useLocation } from 'react-router-dom'
-import { motion, AnimatePresence } from 'framer-motion'
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Document, Page, View, Text, StyleSheet, PDFViewer } from '@react-pdf/renderer';
+import { Printer } from 'lucide-react';
+
+// Define styles for PDF
+const styles = StyleSheet.create({
+  page: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    backgroundColor: '#E4E4E4',
+    padding: 10,
+  },
+  card: {
+    width: '30%',
+    height: '30%',
+    margin: '1.5%',
+    padding: 20,
+    backgroundColor: '#ff5722',
+    borderRadius: 5,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  text: {
+    fontSize: 12,
+    textAlign: 'center',
+  },
+});
+
+// PDF Document component
+const FlashcardsPDF = ({ flashCards }) => (
+  <Document>
+    {[...Array(Math.ceil(flashCards.length / 6))].map((_, pageIndex) => (
+      <Page key={`page-${pageIndex}`} size="A4" style={styles.page}>
+        {flashCards.slice(pageIndex * 6, (pageIndex + 1) * 6).map((card, index) => (
+          <View key={`card-${index}`} style={styles.card}>
+            <Text style={styles.text}>{pageIndex % 2 === 0 ? card.question : card.answer}</Text>
+          </View>
+        ))}
+      </Page>
+    ))}
+  </Document>
+);
 
 export default function FlashcardsComponent() {
-  const location = useLocation()
-  const [flashCards, setFlashCards] = useState([])
-  const [currentCard, setCurrentCard] = useState(0)
-  const [isFlipped, setIsFlipped] = useState(false)
-  const [direction, setDirection] = useState(0)
+  const location = useLocation();
+  const [flashCards, setFlashCards] = useState([]);
+  const [currentCard, setCurrentCard] = useState(0);
+  const [isFlipped, setIsFlipped] = useState(false);
+  const [direction, setDirection] = useState(0);
+  const [showPDFPreview, setShowPDFPreview] = useState(false);
 
   useEffect(() => {
-    const rawFlashCardData = location.state?.flashCardData
-    console.log('Raw flashcard data:', rawFlashCardData)
+    const rawFlashCardData = location.state?.flashCardData;
+    console.log('Raw flashcard data:', rawFlashCardData);
 
     if (typeof rawFlashCardData === 'string') {
       try {
         const cleanedData = rawFlashCardData
           .replace(/^```json/, '')
           .replace(/```$/, '')
-          .trim()
+          .trim();
 
-        console.log('Cleaned flashcard data:', cleanedData)
+        console.log('Cleaned flashcard data:', cleanedData);
 
-        const parsedData = JSON.parse(cleanedData)
-        console.log('Parsed flashcard data:', parsedData)
+        const parsedData = JSON.parse(cleanedData);
+        console.log('Parsed flashcard data:', parsedData);
 
         if (Array.isArray(parsedData) && parsedData.length > 0) {
-          setFlashCards(parsedData)
-          console.log('Flashcards set:', parsedData)
+          setFlashCards(parsedData);
+          console.log('Flashcards set:', parsedData);
         } else {
-          console.log('Parsed data is not an array or is empty')
+          console.log('Parsed data is not an array or is empty');
         }
       } catch (error) {
-        console.error('Error parsing flashcard data:', error)
+        console.error('Error parsing flashcard data:', error);
       }
     } else {
-      console.log('Flashcard data is not a string, cannot parse')
+      console.log('Flashcard data is not a string, cannot parse');
     }
-  }, [location.state])
+  }, [location.state]);
 
   useEffect(() => {
-    console.log('Current flashcards state:', flashCards)
-  }, [flashCards])
+    console.log('Current flashcards state:', flashCards);
+  }, [flashCards]);
+
+  const togglePDFPreview = () => {
+    setShowPDFPreview(!showPDFPreview);
+  };
 
   const nextCard = () => {
-    setDirection(1)
-    setIsFlipped(false)
-    setCurrentCard((prev) => (prev + 1) % flashCards.length)
-  }
+    setDirection(1);
+    setIsFlipped(false);
+    setCurrentCard((prev) => (prev + 1) % flashCards.length);
+  };
 
   const prevCard = () => {
-    setDirection(-1)
-    setIsFlipped(false)
-    setCurrentCard((prev) => (prev - 1 + flashCards.length) % flashCards.length)
-  }
+    setDirection(-1);
+    setIsFlipped(false);
+    setCurrentCard((prev) => (prev - 1 + flashCards.length) % flashCards.length);
+  };
 
   const flipCard = () => {
-    setIsFlipped(!isFlipped)
-  }
+    setIsFlipped(!isFlipped);
+  };
 
   const variants = {
     enter: (direction) => ({
@@ -75,24 +122,30 @@ export default function FlashcardsComponent() {
       opacity: 0,
       zIndex: 0,
     }),
-  }
+  };
 
   if (flashCards.length === 0) {
     return (
       <div className="text-center text-gray-500">
         No flashcards available. Please upload a file to generate flashcards.
       </div>
-    )
+    );
   }
 
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-bold text-gray-800">Your Flashcards</h2>
       <div className="bg-white p-6 rounded-lg shadow-md">
-        <div className="mb-4 text-center">
+        <div className="mb-4 flex justify-between items-center">
           <span className="text-sm text-gray-500">
             Card {currentCard + 1} of {flashCards.length}
           </span>
+          <button
+            onClick={togglePDFPreview}
+            className="p-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition-colors"
+          >
+            <Printer size={20} />
+          </button>
         </div>
         <div className="relative w-64 h-64 mx-auto perspective-1000">
           <AnimatePresence initial={false} custom={direction}>
@@ -155,7 +208,15 @@ export default function FlashcardsComponent() {
             Next
           </button>
         </div>
+        {showPDFPreview && (
+          <div className="mt-4">
+            <h3 className="text-lg font-semibold mb-2">PDF Preview</h3>
+            <PDFViewer width="100%" height={500}>
+              <FlashcardsPDF flashCards={flashCards} />
+            </PDFViewer>
+          </div>
+        )}
       </div>
     </div>
-  )
+  );
 }
