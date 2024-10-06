@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Document, Page, View, Text, StyleSheet, PDFViewer } from '@react-pdf/renderer';
+import { Document, Page, View, Text, StyleSheet, pdf } from '@react-pdf/renderer';
 import { Printer } from 'lucide-react';
 
-// Define styles for PDF (unchanged)
+// Define styles for PDF
 const styles = StyleSheet.create({
   page: {
     flexDirection: 'row',
@@ -17,19 +17,19 @@ const styles = StyleSheet.create({
     height: '30%',
     margin: '1.5%',
     padding: 20,
-    backgroundColor: '#ff5722',
+    backgroundColor: '#FFFFFF', // Changed to white
     borderRadius: 5,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
   },
   text: {
-    fontSize: 12,
+    fontSize: 14, // Increased font size
     textAlign: 'center',
   },
 });
 
-// PDF Document component (unchanged)
+// PDF Document component
 const FlashcardsPDF = ({ flashCards }) => (
   <Document>
     {[...Array(Math.ceil(flashCards.length / 6))].map((_, pageIndex) => (
@@ -50,7 +50,6 @@ export default function FlashcardsComponent() {
   const [currentCard, setCurrentCard] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [direction, setDirection] = useState(0);
-  const [showPDFPreview, setShowPDFPreview] = useState(false);
 
   useEffect(() => {
     const rawFlashCardData = location.state?.flashCardData;
@@ -86,8 +85,14 @@ export default function FlashcardsComponent() {
     console.log('Current flashcards state:', flashCards);
   }, [flashCards]);
 
-  const togglePDFPreview = () => {
-    setShowPDFPreview(!showPDFPreview);
+  const downloadPDF = async () => {
+    const blob = await pdf(<FlashcardsPDF flashCards={flashCards} />).toBlob();
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'flashcards.pdf';
+    link.click();
+    URL.revokeObjectURL(url);
   };
 
   const nextCard = () => {
@@ -106,6 +111,7 @@ export default function FlashcardsComponent() {
     setIsFlipped(!isFlipped);
   };
 
+  
   const variants = {
     enter: (direction) => ({
       x: direction > 0 ? 1000 : -1000,
@@ -141,8 +147,8 @@ export default function FlashcardsComponent() {
             Card {currentCard + 1} of {flashCards.length}
           </span>
           <button
-            onClick={togglePDFPreview}
-            className="p-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors"
+            onClick={downloadPDF}
+            className="p-3 bg-custom-red-500 hover:bg-custom-orange-500 text-white rounded-lg transition-colors"
           >
             <Printer size={24} />
           </button>
@@ -163,7 +169,7 @@ export default function FlashcardsComponent() {
               className="absolute w-full h-full"
             >
               <motion.div
-                className="w-full h-full bg-gray-100 rounded-2xl shadow-lg cursor-pointer flex items-center justify-center p-8"
+                className="w-full h-full bg-gray-100 rounded-2xl shadow-lg cursor-pointer"
                 onClick={flipCard}
                 animate={{ rotateY: isFlipped ? 180 : 0 }}
                 transition={{ duration: 0.6 }}
@@ -173,22 +179,22 @@ export default function FlashcardsComponent() {
                 }}
               >
                 <motion.div
-                  className="absolute w-full h-full flex items-center justify-center p-8 backface-hidden"
+                  className="absolute w-full h-full flex items-center justify-center p-8 backface-hidden bg-gray-100 rounded-2xl"
                   initial={{ opacity: 1 }}
                   animate={{ opacity: isFlipped ? 0 : 1 }}
                   transition={{ duration: 0.3 }}
                   style={{ transform: 'rotateY(0deg)' }}
                 >
-                  <p className="text-3xl text-center">{flashCards[currentCard]?.question}</p>
+                  <p className="text-3xl text-center overflow-auto max-h-full">{flashCards[currentCard]?.question}</p>
                 </motion.div>
                 <motion.div
-                  className="absolute w-full h-full flex items-center justify-center p-8 backface-hidden"
+                  className="absolute w-full h-full flex items-center justify-center p-8 backface-hidden bg-gray-100 rounded-2xl"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: isFlipped ? 1 : 0 }}
                   transition={{ duration: 0.3 }}
                   style={{ transform: 'rotateY(180deg)' }}
                 >
-                  <p className="text-3xl text-center">{flashCards[currentCard]?.answer}</p>
+                  <p className="text-3xl text-center overflow-auto max-h-full">{flashCards[currentCard]?.answer}</p>
                 </motion.div>
               </motion.div>
             </motion.div>
@@ -197,25 +203,17 @@ export default function FlashcardsComponent() {
         <div className="mt-8 flex justify-between">
           <button
             onClick={prevCard}
-            className="px-6 py-3 text-xl bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+            className="px-6 py-3 text-xl bg-custom-red-500 text-white rounded-lg hover:bg-custom-orange-500 transition-colors"
           >
             Previous
           </button>
           <button
             onClick={nextCard}
-            className="px-6 py-3 text-xl bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+            className="px-6 py-3 text-xl bg-custom-red-500 text-white rounded-lg hover:bg-custom-orange-500 transition-colors"
           >
             Next
           </button>
         </div>
-        {showPDFPreview && (
-          <div className="mt-8">
-            <h3 className="text-2xl font-semibold mb-4">PDF Preview</h3>
-            <PDFViewer width="100%" height={600}>
-              <FlashcardsPDF flashCards={flashCards} />
-            </PDFViewer>
-          </div>
-        )}
       </div>
     </div>
   );

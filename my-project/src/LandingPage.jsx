@@ -18,7 +18,9 @@ const LandingPage = () => {
 
       try {
         const formData = new FormData();
-        formData.append('file', files[0]); // Only send the first file
+        files.forEach((file) => {
+          formData.append(`files`, file);
+        });
 
         const [quizResponse, summaryResponse, flashCardResponse] = await Promise.all([
           axios.post('http://localhost:3000/generate-quiz', formData, {
@@ -69,7 +71,7 @@ const LandingPage = () => {
   };
 
   const handleFiles = (files) => {
-    setUploadedFiles(files);
+    setUploadedFiles(prevFiles => [...prevFiles, ...files]);
     console.log('Files uploaded:', files);
   };
 
@@ -89,97 +91,150 @@ const LandingPage = () => {
     }
   };
 
-  const handleLogin = () => {
-    navigate('/signin');
+  const removeFile = (index) => {
+    setUploadedFiles(prevFiles => prevFiles.filter((_, i) => i !== index));
   };
 
-  const handleSignUp = () => {
-    navigate('/signin');
-  };
-
+  
   return (
     <div 
-      className={`min-h-screen flex flex-col items-center justify-between p-8 ${isDragging ? 'bg-gray-200' : 'bg-gray-50'}`}
+      className={`min-h-screen flex flex-col items-center justify-between p-8 ${isDragging ? 'bg-orange-100' : 'bg-gray-50'}`}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
     >
-      <div className="w-full max-w-4xl mx-auto flex-grow flex flex-col items-center justify-between space-y-8">
-        <div className="text-center">
-          <h1 className="text-6xl font-bold text-gray-800 mb-4">Need help studying?</h1>
+      <div className="w-full max-w-4xl mx-auto flex-grow flex flex-col items-center">
+        <div className="text-center mt-16 mb-16">
+          <h1 className="text-7xl font-bold text-gray-800 mb-6">Need help studying?</h1>
           <p className="text-xl text-gray-600 max-w-2xl">
             Upload your notes, presentations, textbooks, and more to instantly generate flashcards and quizzes.
           </p>
         </div>
 
-        <div className="w-full max-w-md flex flex-col items-center">
-          <label htmlFor="file-upload" className="w-full">
-            <div className="bg-orange-500 text-white text-3xl font-semibold py-6 px-12 rounded-full text-center cursor-pointer hover:bg-orange-600 transition-colors">
-              {isLoading ? 'Processing...' : 'Select your study materials!'}
-            </div>
-          </label>
-          <input 
-            id="file-upload" 
-            type="file" 
-            className="hidden" 
-            onChange={handleFileInputChange}
-            multiple
-          />
-          <p className="text-center mt-2 text-gray-500">or drop files here</p>
-        </div>
-
-        {uploadedFiles.length > 0 && (
-          <div className={`w-full max-w-md p-4 rounded-lg ${isDragging ? 'bg-gray-200' : 'bg-gray-50'}`}>
-            <div className="grid grid-cols-2 gap-4">
-              {uploadedFiles.map((file, index) => (
-                <div key={index} className="flex flex-col items-center space-y-2">
-                  <img src={getFileIcon(file)} alt="File icon" className="w-[100px] h-[100px] object-contain" />
-                  <span className="text-sm text-center">{file.name}</span>
+        <div className="w-full max-w-md flex flex-col items-center space-y-8 mb-auto">
+          {!isLoading && (
+            <div className="w-full flex flex-col items-center">
+              <label htmlFor="file-upload" className="w-full">
+                <div className="bg-custom-orange-500 text-white text-3xl font-semibold py-6 px-12 rounded-full text-center cursor-pointer hover:bg-custom-red-500 transition-colors">
+                  Select your study materials!
                 </div>
-              ))}
+              </label>
+              <input 
+                id="file-upload" 
+                type="file" 
+                className="hidden" 
+                onChange={handleFileInputChange}
+                multiple
+              />
+              <p className="text-center mt-2 text-gray-500">or drop files here</p>
             </div>
-          </div>
-        )}
+          )}
 
-        {uploadedFiles.length > 0 && !isLoading && (
-          <button
-            onClick={handleStudyClick}
-            className="bg-orange-500 text-white text-3xl font-semibold py-6 px-12 rounded-full hover:bg-orange-600 transition-colors"
-          >
-            Let's study!
-          </button>
-        )}
+          {uploadedFiles.length > 0 && (
+            <div className="w-full max-w-md flex justify-center">
+              <div className={`p-4 rounded-lg ${isDragging ? 'bg-orange-100' : 'bg-gray-50'}`}>
+                <div className="flex flex-wrap justify-center gap-4">
+                  {uploadedFiles.map((file, index) => (
+                    <div key={index} className="flex flex-col items-center space-y-2 relative">
+                      <img src={getFileIcon(file)} alt="File icon" className="w-[100px] h-[100px] object-contain" />
+                      <span className="text-sm text-center w-24 truncate">{file.name}</span>
+                      {!isLoading && (
+                        <button
+                          onClick={() => removeFile(index)}
+                          className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
+                        >
+                          ×
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
 
-        {isLoading && (
-          <div className="text-xl font-semibold text-gray-600">
-            Processing your files...
-          </div>
-        )}
+          {uploadedFiles.length > 0 && !isLoading ? (
+            <button
+              onClick={handleStudyClick}
+              className="bg-orange-500 text-white text-3xl font-semibold py-6 px-12 rounded-full hover:bg-orange-600 transition-colors"
+            >
+              Let's study!
+            </button>
+          ) : isLoading ? (
+            <div className="loader-container">
+              <div className="loader"></div>
+            </div>
+          ) : null}
+        </div>
       </div>
 
-      <div className="w-full flex justify-between items-end mt-8">
-        <div></div>
-        <p className="text-sm text-gray-500 ml-60">
+      <div className="w-full flex justify-center mt-4">
+        <p className="text-sm text-gray-500">
           Your files are secure and private. We don't share your study materials.
         </p>
-        <div className="bg-white p-4 rounded-lg shadow-md">
-          <p className="text-gray-700 mb-2">Want to save your progress?</p>
-          <div className="flex space-x-2">
-            <button 
-              className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors"
-              onClick={handleSignUp}
-            >
-              Sign Up
-            </button>
-            <button 
-              className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors"
-              onClick={handleLogin}
-            >
-              Log In
-            </button>
-          </div>
-        </div>
       </div>
+
+      <style jsx>{`
+        .loader-container {
+          position: absolute;
+          left: 50%;
+          top: calc(40% + 25vh);
+          transform: translate(-50%, -50%);
+        }
+        .loader {
+          width: 60px;
+          height: 30px;
+          --c: no-repeat radial-gradient(farthest-side,#000 93%,#0000);
+          background:
+            var(--c) 0    0,
+            var(--c) 50%  0;
+          background-size: 12px 12px;
+          position: relative;
+          clip-path: inset(-200% -100% 0 0);
+          animation: l6-0 1.5s linear infinite;
+        }
+        .loader:before {
+          content: "";
+          position: absolute;
+          width: 12px;
+          height: 18px;
+          background: #000;
+          left: -24px;
+          top: 0;
+          animation: 
+            l6-1 1.5s linear infinite,
+            l6-2 0.5s cubic-bezier(0,200,.8,200) infinite;
+        }
+        .loader:after {
+          content: "";
+          position: absolute;
+          inset: 0 0 auto auto;
+          width: 12px;
+          height: 12px;
+          border-radius: 50%;
+          background: #000; 
+          animation: l6-3 1.5s linear infinite;
+        }
+        @keyframes l6-0 {
+          0%,30%  {background-position: 0  0   ,50% 0   }
+          33%     {background-position: 0  100%,50% 0   }
+          41%,63% {background-position: 0  0   ,50% 0   }
+          66%     {background-position: 0  0   ,50% 100%}
+          74%,100%{background-position: 0  0   ,50% 0   }
+        }
+        @keyframes l6-1 {
+          90%  {transform:translateY(0)}
+          95%  {transform:translateY(22.5px)}
+          100% {transform:translateY(22.5px);left:calc(100% - 12px)}
+        }
+        @keyframes l6-2 {
+          100% {top:-0.1px}
+        }
+        @keyframes l6-3 {
+          0%,80%,100% {transform:translate(0)}
+          90%         {transform:translate(39px)}
+        }
+      `}</style>
     </div>
   );
 };

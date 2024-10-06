@@ -118,7 +118,7 @@ export default function QuizComponent() {
                     <ul className="list-disc list-inside mt-4">
                       {resources.map((resource, index) => (
                         <li key={index} className="mb-2">
-                          <a href={resource.url} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+                          <a href={resource.url} target="_blank" rel="noopener noreferrer" className="text-custom-orange-500 hover:underline">
                             {resource.title}
                           </a>
                         </li>
@@ -134,7 +134,7 @@ export default function QuizComponent() {
             )}
             <button
               onClick={restartQuiz}
-              className="mt-8 px-6 py-3 text-xl bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+              className="mt-8 px-6 py-3 text-xl bg-custom-red-500 text-white rounded-lg hover:bg-custom-orange-500 transition-colors"
             >
               Restart Quiz
             </button>
@@ -161,7 +161,7 @@ export default function QuizComponent() {
               <div className="mt-8 flex justify-end">
                 <button
                   onClick={handleNextQuestion}
-                  className="px-6 py-3 text-xl bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  className="px-6 py-3 text-xl bg-custom-red-500 text-white rounded-lg hover:bg-custom-orange-500 transition-colors"
                 >
                   Next
                 </button>
