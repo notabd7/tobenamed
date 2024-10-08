@@ -1,5 +1,4 @@
 # Peachy Prep
-<div align="center">
   
 ## Inspiration
 Ever since ChatGPT came out, my most frequent use for it _by far_ was to help me study for my courses. Over the past two years, I've gotten quite good at using it in a way that is most helpful for making content as digestible and easily understandable as possible for myself. Our goal was not only to streamline this for students already quite experienced at "prompt engineering" to effectively study, but also for students unfamiliar with this technology to take advantage of it.
